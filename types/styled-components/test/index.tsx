@@ -18,7 +18,7 @@ import styled, {
     FlattenSimpleInterpolation,
     FlattenInterpolation,
 } from 'styled-components';
-import {} from 'styled-components/cssprop';
+import { } from 'styled-components/cssprop';
 
 /**
  * general usage
@@ -258,7 +258,7 @@ const MyOtherComponentWithProps = () => (
 
 // Create a <LinkFromStringWithPropsAndGenerics> react component that renders an <a>
 // which takes extra props passed as a generic type argument
-const LinkFromStringWithPropsAndGenerics = styled('a')<LinkProps>`
+const LinkFromStringWithPropsAndGenerics = styled('a') <LinkProps>`
     font-size: 1.5em;
     text-align: center;
     color: ${a => (a.canClick ? 'palevioletred' : 'gray')};
@@ -351,7 +351,7 @@ styled('div').withConfig({})`
 
 styled('div').withConfig<{ myProp: boolean }>({
     shouldForwardProp: (prop, defaultValidatorFn) => prop === 'myProp',
-})<{ otherProp: string }>`
+}) <{ otherProp: string }>`
     color: red;
     ${p => {
         // $ExpectType boolean
@@ -627,6 +627,9 @@ const asTest = (
     <>
         <WithComponentH1 as="h2" />
         <WithComponentH1 as={WithComponentH2} />
+        <WithComponentH1 as="a" href="" />
+        <WithComponentH1 as="div" href="" /> { // $ExpectError
+        }
     </>
 );
 
@@ -636,6 +639,9 @@ const forwardedAsTest = (
     <>
         <ForwardedAsComponent forwardedAs="h2" />
         <ForwardedAsComponent forwardedAs={WithComponentH2} />
+        <ForwardedAsComponent forwardedAs="a" href="" />
+        <ForwardedAsComponent forwardedAs="div" href="" /> { // $ExpectError
+        }
     </>
 );
 
@@ -669,7 +675,9 @@ const HasAttributesOfAsOrForwardedAsComponent = (
     <>
         <WrappedExternalAsComponent as="a" type="primitive" href="/" />
         <WrappedExternalAsComponent forwardedAs="a" type="complex" href="/" />
-        <WrappedExternalAsComponent as={OtherExternalComponent} type="primitive" requiredProp="test" />
+        <WrappedExternalAsComponent as={OtherExternalComponent} requiredProp="test" />
+        {<WrappedExternalAsComponent as={OtherExternalComponent} type="primitive" requiredProp="test" /> // $ExpectError
+        }
         <WrappedExternalAsComponent forwardedAs={OtherExternalComponent} type="complex" requiredProp="test" />
     </>
 );
@@ -695,7 +703,8 @@ class Test2Container extends React.Component<Test2ContainerProps> {
     }
 }
 
-const containerTest = <StyledTestContainer as={Test2Container} type="foo" size="big"/>;
+const containerTest = <StyledTestContainer as={Test2Container} type="foo" />;
+const containerTestFailed = <StyledTestContainer as={Test2Container} type="foo" size="big" />; // $ExpectError
 const containerTestTwo = <StyledTestContainer forwardedAs={Test2Container} type="foo" size="big" />;
 
 // 4.0 refs
@@ -1130,7 +1139,7 @@ function staticPropertyPassthrough() {
     interface BState {
         b?: string;
     }
-    class A extends React.Component<AProps> {}
+    class A extends React.Component<AProps> { }
     class B extends React.Component {
         static A = A;
         PUBLIC = 'PUBIC_VAL';
@@ -1142,7 +1151,7 @@ function staticPropertyPassthrough() {
     // Test FunctionComponent as well which can't be tested in <= TS 3.0
     const C: React.FC & { A: typeof A; F: () => void } = () => <div></div>;
     C.A = A;
-    C.F = () => {};
+    C.F = () => { };
     const StyledB = styled(B)``;
     const StyledC = styled(C)``;
     <StyledB.A />; // $ExpectError
@@ -1190,13 +1199,13 @@ function unionTest2() {
     // Union of two non-overlapping types
     type Props =
         | {
-              foo: number;
-              bar?: undefined;
-          }
+            foo: number;
+            bar?: undefined;
+        }
         | {
-              foo?: undefined;
-              bar: string;
-          };
+            foo?: undefined;
+            bar: string;
+        };
 
     const C = styled.div<Props>``;
 
